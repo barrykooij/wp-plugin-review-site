@@ -1,0 +1,54 @@
+version: "3" 
+
+services:
+  db:
+    image: mariadb:10.5.8
+
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${PRT} 
+      MYSQL_DATABASE: ${PRT}
+      MYSQL_USER: ${PRT}
+      MYSQL_PASSWORD: ${PRT}
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_USER: ${PRT}
+      PMA_PASSWORD: ${PRT}
+    ports:
+      - "8080:80"
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    restart: always
+    ports:
+      - "8000:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: ${PRT}
+      WORDPRESS_DB_PASSWORD: ${PRT}
+      WORDPRESS_DB_NAME: ${PRT}
+      WP_DEBUG: 1
+    volumes:
+      - ./tmp/wp-data/:/var/www/html/
+  my-wpcli:
+    image: wordpressdevelop/cli:latest
+    depends_on:
+      - wordpress
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: ${PRT}
+      WORDPRESS_DB_PASSWORD: ${PRT}
+      WORDPRESS_DB_NAME: ${PRT}
+      WP_DEBUG: 1
+    volumes:
+      - ./setup-review.sh:/setup-review.sh
+      - ./tmp/plugin.zip:/plugin.zip
+      - ./tmp/wp-data:/var/www/html/
+    command: >
+      bash /setup-review.sh;
+volumes:
+  mysql: {}
