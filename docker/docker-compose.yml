@@ -31,6 +31,7 @@ services:
       WORDPRESS_DB_USER: ${PRT}
       WORDPRESS_DB_PASSWORD: ${PRT}
       WORDPRESS_DB_NAME: ${PRT}
+      WORDPRESS_DEBUG: 1
       WP_DEBUG: 1
     volumes:
       - ./tmp/wp-data/:/var/www/html/
