@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ -z "$1" ]
+  then
+    echo "No plugin URL supplied"
+    exit 1
+fi
+
 echo "Shut down containers"
 (cd docker  ; docker compose down -v )
 
